@@ -61,6 +61,7 @@ class SGEGraphPlugin(GraphPluginBase):
                 with open(batchscriptfile, 'wt') as batchfp:
                     batchfp.writelines(batchscript)
                     batchfp.close()
+                os.chmod(batchscriptfile, 0744)
                 deps = ''
                 if idx in dependencies:
                     values = ' '
