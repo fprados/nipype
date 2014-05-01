@@ -54,8 +54,7 @@ def _test_local_install():
     if os.getcwd() == os.sep.join(
                             os.path.abspath(__file__).split(os.sep)[:-2]):
         import warnings
-        warnings.warn('Running the tests from the install directory may '
-                     'trigger some failures')
+        warnings.warn('Running the tests from the install directory may trigger some failures')
 
 _test_local_install()
 
@@ -77,4 +76,4 @@ except:
 from pipeline import Node, MapNode, JoinNode, Workflow
 from interfaces import (fsl, spm, freesurfer, afni, ants, slicer, dipy, nipy,
                         mrtrix, camino, DataGrabber, DataSink, SelectFiles,
-                        IdentityInterface, Rename, Function, Select, Merge)
+                        IdentityInterface, Rename, Function, Select, Merge, niftyseg)
