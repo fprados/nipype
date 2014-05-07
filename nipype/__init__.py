@@ -76,4 +76,4 @@ except:
 from pipeline import Node, MapNode, JoinNode, Workflow
 from interfaces import (fsl, spm, freesurfer, afni, ants, slicer, dipy, nipy,
                         mrtrix, camino, DataGrabber, DataSink, SelectFiles,
-                        IdentityInterface, Rename, Function, Select, Merge, niftyseg)
+                        IdentityInterface, Rename, Function, Select, Merge, niftyseg, susceptibility)

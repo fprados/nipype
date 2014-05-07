@@ -21,11 +21,9 @@ def configuration(parent_package='', top_path=None):
     config.add_subpackage('nipy')
     config.add_subpackage('spm')
     config.add_subpackage('slicer')
-<<<<<<< HEAD
     config.add_subpackage('niftyseg')
-=======
     config.add_subpackage('niftyreg')
->>>>>>> origin/niftyreg-interface
+    config.add_subpackage('susceptibility')
 
     config.add_data_dir('script_templates')
     config.add_data_dir('tests')
