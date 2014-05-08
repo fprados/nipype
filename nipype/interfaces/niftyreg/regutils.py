@@ -233,6 +233,55 @@ class RegTools(CommandLine):
                 outputs['out_file'] = os.path.abspath(self.inputs.out_file)
 
 #-----------------------------------------------------------
+# reg_measure wrapper interface
+#-----------------------------------------------------------
+class RegMeasureInputSpec(NiftyRegCommandInputSpec):
+    ref_file = File(exists=True, desc='The input reference/target image',
+                   argstr='-ref %s', mandatory=True)
+    flo_file = File(exists=True, desc='The input floating/source image',
+                   argstr='-flo %s', mandatory=True)
+
+    ncc_flag = traits.Bool(argstr='-ncc', desc='Compute NCC')
+    lncc_flag = traits.Bool(argstr='-lncc', desc='Compute LNCC')
+    nmi_flag = traits.Bool(argstr='-nmi', desc='Compute NMI')
+    ssd_flag = traits.Bool(argstr='-ssd', desc='Compute SSD')
+
+class RegMeasureOutputSpec(TraitedSpec):
+    pass
+
+class RegMeasure(CommandLine):
+    _cmd = 'reg_measure'
+    input_spec = RegMeasureInputSpec
+    output_spec = RegMeasureOutputSpec 
+
+#-----------------------------------------------------------
+# reg_average wrapper interface
+#-----------------------------------------------------------
+class RegAverageInputSpec(NiftyRegCommandInputSpec):
+    out_file = File(mandatory=True, position=0, desc='Output file name',
+        argstr='%s')
+
+    avg_val = traits.List(traits.Str, argstr='-avg %s', sep=' ',
+        minlen=2, desc='Averaging of images/affine transformations')
+
+    demean_1_val = traits.List(traits.Str, argstr='-demean1 %s', sep=' ',
+        desc='Demean 1')
+
+    demean_2_val = traits.List(traits.Str, argstr='-demean2 %s', sep=' ',
+        desc='Demean 2')
+
+    demean_3_val = traits.List(traits.Str, argstr='-demean3 %s', sep=' ',
+        desc='Demean 3')
+
+class RegAverageOutputSpec(TraitedSpec):
+    out_file = File(desc='Output file name')
+
+class RegAverage(CommandLine):
+    _cmd = 'reg_average'
+    input_spec = RegAverageInputSpec
+    output_spec = RegAverageOutputSpec
+
+#-----------------------------------------------------------
 # reg_aladin wrapper interface
 #-----------------------------------------------------------
 # Input spec
@@ -320,6 +369,47 @@ class RegAladin(CommandLine):
         if isdefined(self.inputs.result_file) and self.inputs.result_file:
             outputs['result_file'] = os.path.abspath(self.inputs.result_file)
 
+#-----------------------------------------------------------
+# reg_transform wrapper interface
+#-----------------------------------------------------------
+class RegTransformInputSpec(NiftyRegCommandInputSpec):
+    ref1_file = File(exists=True, desc='The input reference/target image',
+                   argstr='-ref %s')
+    ref2_file = File(exists=True, desc='The input second reference/target image',
+                   argstr='-ref2 %s')
+    def_val = traits.Tuple(File(exists=True), File, 
+        desc='Compute deformation field from transformation', argstr='-def %s %s')
+    disp_val = traits.Tuple(File(exists=True), File, 
+        desc='Compute displacement field from transformation', argstr='-disp %s %s')
+    flow_val = traits.Tuple(File(exists=True), File, 
+        desc='Compute flow field from spline SVF', argstr='-flow %s %s')
+    comp_val = traits.Tuple(File, File, File,
+        desc='compose two transformations', argstr='-comp %s %s %s')
+    upd_s_form_val = traits.Tuple(File(exists=True), File(exists=True), File,
+        desc='Update s-form using the affine transformation', argstr='-updSform %s %s %s')
+    inv_aff_val = traits.Tuple(File(exists=True), File,
+        desc='Invert an affine transformation', argstr='-invAff %s %s')
+    inv_nrr_val = traits.Tuple(File(exists=True), File(exists=True), File,
+        desc='Invert a non-linear transformation', argstr='-invNrr %s %s %s')
+    half_val = traits.Tuple(File(exists=True), File,
+        desc='Half way to the input transformation', argstr='-half %s %s')
+    make_aff_val = traits.Tuple(traits.Float, traits.Float, traits.Float, traits.Float,
+        traits.Float, traits.Float, traits.Float, traits.Float, traits.Float, traits.Float,
+        traits.Float, traits.Float, File, desc = 'Make an affine transformation matrix',
+        argstr='-makeAff %f %f %f %f %f %f %f %f %f %f %f %f %s')
+    aff_2_rig_val = traits.Tuple(File(exists=True), File, 
+        desc='Extract the rigid component from affine transformation', argstr='-aff2rig %s %s')
+    flirt_2_nr_val = traits.Tuple(File(exists=True), File(exists=True), File(exists=True), File,
+        desc='Convert a FLIRT affine transformation to niftyreg affine transformation',
+        argstr='-flirtAff2NR %s %s %s %s')
+
+class RegTransformOutputSpec(TraitedSpec):
+    pass
+
+class RegTransform(CommandLine):
+    _cmd = 'reg_transform'
+    input_spec = RegTransformInputSpec
+    output_spec = RegTransformOutputSpec
 
 #-----------------------------------------------------------
 # reg_f3d wrapper interface
