@@ -90,7 +90,7 @@ class RegResampleInputSpec(NiftyRegCommandInputSpec):
 # Output spec
 class RegResampleOutputSpec(TraitedSpec):
     res_file = File(desc='The output filename of the transformed image')
-    blank_file = File(desc='The output filename of resampled blank grid (if generated)')
+    blank_file = File(exists = False, desc='The output filename of resampled blank grid (if generated)')
 
 # Resampler class
 class RegResample(NiftyRegCommand):
