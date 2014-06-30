@@ -387,10 +387,12 @@ class RegAladin(NiftyRegCommand):
 class RegTransformInputSpec(NiftyRegCommandInputSpec):
 
     ref1_file = File(exists=True, desc='The input reference/target image',
-                     argstr='-ref %s')
+                     argstr='-ref %s',
+                     position=0)
     ref2_file = File(exists=True, 
                      desc='The input second reference/target image',
-                     argstr='-ref2 %s')
+                     argstr='-ref2 %s',
+                     position=0)
 
     def_input = File(exists=True, 
                      desc='Compute deformation field from transformation', 
