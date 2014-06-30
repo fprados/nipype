@@ -5,12 +5,9 @@
 
 import warnings
 
-from nipype.interfaces.niftyfit.base import NiftyFitCommandInputSpec
+from nipype.interfaces.niftyfit.base import NIFTYFITCommandInputSpec, NIFTYFITCommand
 
 from nipype.interfaces.base import (TraitedSpec, File, traits)
-
-from nipype.interfaces.fsl.base import FSLCommand as NiftyFitCommand
-
 
 warn = warnings.warn
 warnings.filterwarnings('always', category=UserWarning)
@@ -20,7 +17,7 @@ warnings.filterwarnings('always', category=UserWarning)
 #-----------------------------------------------------------
 
 # Input spec
-class FitDwiInputSpec(NiftyFitCommandInputSpec):
+class FitDwiInputSpec(NIFTYFITCommandInputSpec):
     # Input options
     source_file = File(exists=True, desc='The source image containing the dwi data',
                    argstr='-source %s', mandatory=True)
@@ -94,7 +91,7 @@ class FitDwiOutputSpec(TraitedSpec):
 # FitDwi function
 # TODO: Add functionality to selectivitly generate outputs images, as currently all possible
 # images will be generated
-class FitDwi(NiftyFitCommand):
+class FitDwi(NIFTYFITCommand):
     """ Use NiftyFit to perform diffusion model fitting.
     
     Examples
@@ -114,3 +111,86 @@ class FitDwi(NiftyFitCommand):
     output_spec = FitDwiOutputSpec
     
     _suffix = '_fit_dwi'
+
+
+# Input spec
+class DwiToolInputSpec(NIFTYFITCommandInputSpec):
+    # Input options
+    source_file = File(exists=True, desc='The source image containing the fitted model',
+                   argstr='-source %s', mandatory=True)
+    bval_file = File(exists=True, desc='The file containing the bvalues of the source DWI',
+                   argstr='-bval %s', mandatory=True)
+    bvec_file = File(exists=True, desc='The file containing the bvectors of the source DWI',
+                   argstr='-bvec %s', mandatory=True)
+    mask_file = File(exists=True, desc='The image mask',
+                   argstr='-mask %s', mandatory=False)
+    b0_file = File(exists=True, desc='The B0 image corresponding to the', argstr='-b0 %s', mandatory=True)
+
+    # Output options, with templated output names based on the source image
+    mcmap_file = File(desc='Filename of multi-compartment model parameter map (-ivim,-ball,-nod)',
+                      argstr='-mcmap %s', name_source=['source_file'], name_template='%s_mcmap')     
+    syn_file = File(desc='Filename of synthetic image', argstr='-syn %s', 
+                    name_source=['source_file'], name_template='%s_syn')
+    mdmap_file = File(desc='Filename of MD map/ADC', argstr='-mdmap %s',
+                      name_source=['source_file'], name_template='%s_mdmap')
+    famap_file = File(desc='Filename of FA map', argstr='-famap %s', 
+                      name_source=['source_file'], name_template='%s_famap')
+    v1map_file = File(desc='Filename of PDD map [x,y,z]', argstr='-v1map %s',
+                      name_source=['source_file'], name_template='%s_v1map')
+    rgbmap_file = File(desc='Filename of colour FA map', argstr='-rgbmap %s',
+                       name_source=['source_file'], name_template='%s_rgbmap', requires=['dti_flag'])
+    
+    
+    # Methods options
+    mono_flag = traits.Bool(desc='Input is a single exponential to non-directional data [default with no b-vectors]',
+                            argstr='-mono',xor=['method_type'])
+    ivim_flag =traits.Bool(desc='Inputs is an IVIM model to non-directional data.',
+                           argstr='-ivim ',xor=['method_type'])
+    dti_flag = traits.Bool(desc='Input is a tensor model diag/off-diag.',
+                           argstr='-dti ', xor=['method_type'])
+    dti_flag2 = traits.Bool(desc='Input is a tensor model lower triangular',
+                           argstr='-dti2 ', xor=['method_type'])
+    ball_flag = traits.Bool(desc='Input is a ball and stick model.', argstr='-ball ', xor=['method_type'])
+    ballv_flag = traits.Bool(desc='Input is a ball and stick model with optimised PDD.',
+                             argstr='-ballv ', xor=['method_type'])
+    nod_flag = traits.Bool(desc='Input is a NODDI model', argstr='-nod ', xor=['method_type'])
+    nodv_flag = traits.Bool(desc='Input is a NODDI model with optimised PDD', argstr='-nodv ', xor=['method_type'])
+    
+    
+    # Experimental options
+    slice_no = traits.Int(desc='Fit to single slice number', argstr='-slice %i')
+    diso_val = traits.Float(desc='Isotropic diffusivity for -nod [3e-3]', argstr='-diso %f')
+    dpr_val = traits.Float(desc='Parallel diffusivity for -nod [1.7e-3].', argstr='-dpr %f')
+    perf_thr = traits.Float(desc='Threshold for perfusion/diffsuion effects [100].', argstr='-perfusionthreshold %f')
+
+# Output spec
+class DwiToolOutputSpec(TraitedSpec):
+    mcmap_file = File(desc='Filename of multi-compartment model parameter map (-ivim,-ball,-nod)')
+    syn_file = File(desc='Filename of synthetic image')
+    mdmap_file = File(desc='Filename of MD map/ADC')
+    famap_file = File(desc='Filename of FA map')
+    v1map_file = File(desc='Filename of PDD map [x,y,z]')
+    rgbmap_file = File(desc='Filename of colour FA map')
+ 
+
+# DwiTool command
+class DwiTool(NIFTYFITCommand):
+    """ Use DwiTool
+    
+    Examples
+    --------
+    
+    >>> from nipype.interfaces import niftyfit
+    >>> dwi_tool = niftyfit.DwiTool()
+    >>> dwi_tool.inputs.source_file = 
+    >>> dwi_tool.inputs.bvec_file = 
+    >>> dwi_tool.inputs.bval_file = 
+    >>> dwi_tool.inputs.dti_flag = True
+    >>> dwi_tool.inputs.rgbmap_file = 'rgb_map.nii.gz' 
+    >>> dwi_tool.run()
+    """
+    _cmd = 'dwi_tool'
+    input_spec = DwiToolInputSpec
+    output_spec = DwiToolOutputSpec
+    
+    _suffix = '_dwi_tool'
