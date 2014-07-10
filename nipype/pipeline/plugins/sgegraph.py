@@ -28,6 +28,7 @@ class SGEGraphPlugin(GraphPluginBase):
 
     def __init__(self, **kwargs):
         self._qsub_args = ''
+        self._job_name = 'job'
         if 'plugin_args' in kwargs:
             plugin_args = kwargs['plugin_args']
             if 'template' in plugin_args:
@@ -36,6 +37,8 @@ class SGEGraphPlugin(GraphPluginBase):
                     self._template = open(self._template).read()
             if 'qsub_args' in plugin_args:
                 self._qsub_args = plugin_args['qsub_args']
+            if 'job_name' in plugin_args:
+               self._job_name = plugin_args['job_name']
         super(SGEGraphPlugin, self).__init__(**kwargs)
 
     def _submit_graph(self, pyfiles, dependencies, nodes):
@@ -66,11 +69,11 @@ class SGEGraphPlugin(GraphPluginBase):
                 if idx in dependencies:
                     values = ' '
                     for jobid in dependencies[idx]:
-                        values += 'job%05d,' % jobid
+                        values += self._job_name+'%05d,' % jobid
                     if 'job' in values:
                         values = values.rstrip(',')
-                        deps = '-hold_jid%s' % values
-                jobname = 'job%05d' % (idx)
+                        deps = '-hold_jid %s' % values
+                jobname = self._job_name+'%05d' % (idx)
                 ## Do not use default output locations if they are set in self._qsub_args
                 stderrFile = ''
                 if self._qsub_args.count('-e ') == 0:
