@@ -99,13 +99,14 @@ class QstatSubstitute:
     """A wrapper for Qstat to avoid overloading the
     SGE/OGS server with rapid continuous qstat requests"""
 
-    def __init__(self, qstatInstantExecutable='qstat', qstatCachedExecutable='qstat'):
+    def __init__(self, qstatInstantExecutable='qstat', qstatCachedExecutable='qstat', login=''):
         """
         :param qstatInstantExecutable:
         :param qstatCachedExecutable:
         """
         self._qstatInstantExecutable = qstatInstantExecutable
         self._qstatCachedExecutable = qstatCachedExecutable
+        self._login = login
         self._OutOfScopeJobs = list()  # Initialize first
         self._task_dictionary = dict(
         )  # {'taskid': QJobInfo(), .... }  The dictionaryObject
@@ -144,7 +145,7 @@ class QstatSubstitute:
             qacct_retries -= 1
             try:
                 proc = subprocess.Popen(
-                    [thisCommand, '-o', os.getlogin(), '-j', str(taskid)],
+                    [thisCommand, '-o', self._login, '-j', str(taskid)],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE)
                 qacct_result, _ = proc.communicate()
@@ -245,7 +246,7 @@ class QstatSubstitute:
             qstat_retries -= 1
             try:
                 proc = subprocess.Popen(
-                    [thisCommand, '-u', os.getlogin(), '-xml', '-s', 'psrz'],
+                    [thisCommand, '-u', self._login, '-xml', '-s', 'psrz'],
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE)
                 qstat_xml_result, _ = proc.communicate()
@@ -338,6 +339,9 @@ class SGEPlugin(SGELikeBatchManagerBase):
         """
         self._retry_timeout = 2
         self._max_tries = 2
+
+        self._login = os.getlogin()
+
         instantQstat = 'qstat'
         cachedQstat = 'qstat'
 
@@ -351,7 +355,7 @@ class SGEPlugin(SGELikeBatchManagerBase):
             if 'qstatCachedProgramPath' in kwargs['plugin_args']:
                 cachedQstat = kwargs['plugin_args']['qstatCachedProgramPath']
             self._refQstatSubstitute = QstatSubstitute(
-                instantQstat, cachedQstat)
+                instantQstat, cachedQstat, self._login)
 
         super(SGEPlugin, self).__init__(template, **kwargs)
 
