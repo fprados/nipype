@@ -22,6 +22,7 @@ def get_matlab_command():
         matlab_path = res.runtime.stdout.strip()
     except Exception, e:
         return None
+
     return matlab_cmd
 
 no_matlab = get_matlab_command() is None
@@ -70,7 +71,7 @@ class MatlabCommand(CommandLine):
     >>> out = mlab.run() # doctest: +SKIP
     """
 
-    _cmd = 'matlab'
+    _cmd = get_matlab_command()
     _default_matlab_cmd = None
     _default_mfile = None
     _default_paths = None
