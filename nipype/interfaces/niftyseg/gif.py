@@ -68,6 +68,9 @@ class GifInputSpec(NIFTYSEGCommandInputSpec):
                          desc='Jacobian log value for the registration [0.0001]')
     regSL = traits.Bool(argstr = '-regSL',
                          desc='Skip the second Level non-rigid registration')
+    saveGeo = traits.Bool(argstr = '-geo',
+                          desc='Save Geo to output folder',
+                          default=False)
     
 
 class GifOutputSpec(TraitedSpec):
@@ -80,6 +83,7 @@ class GifOutputSpec(TraitedSpec):
     seg_file = File(desc='Segmentation file')
     brain_file = File(desc='Brain file')
     bias_file = File(desc='Bias Corrected file')
+    synth_file = File(desc='Synthetic file')
 
 class Gif(NIFTYSEGCommand):
 
@@ -145,9 +149,10 @@ class Gif(NIFTYSEGCommand):
         outputs['geo_file']    = self._find_file_from_patterns(outputs['out_dir'], basename, 'geo.nii.gz')
         outputs['prior_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'prior.nii.gz')        
         outputs['tiv_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'TIV.nii.gz')
-        outputs['seg_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'Brain.nii.gz')
-        outputs['brain_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'Segmentation.nii.gz')
+        outputs['brain_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'Brain.nii.gz')
+        outputs['seg_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'Segmentation.nii.gz')
         outputs['bias_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, 'BiasCorrected.nii.gz')
+        outputs['synth_file']  = self._find_file_from_patterns(outputs['out_dir'], basename, '.nii.gz')
 
         return outputs
         
