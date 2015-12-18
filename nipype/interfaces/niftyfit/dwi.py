@@ -66,6 +66,60 @@ class FitDwiInputSpec(NIFTYFITCommandInputSpec):
                        name_source=['op_basename'],
                        name_template='%s_rgbmap', 
                        requires=['dti_flag'])
+
+    ramap_file = File(desc='Filename of colour RA map',
+                       argstr='-ramap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_ramap', 
+                       requires=['dti_flag'])
+
+    klmap_file = File(desc='Filename of colour KL map',
+                       argstr='-klmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_klmap', 
+                       requires=['dti_flag'])
+
+    atmap_file = File(desc='Filename of colour AT map',
+                       argstr='-atmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_atmap', 
+                       requires=['dti_flag'])
+
+    lamap_file = File(desc='Filename of colour LA map',
+                       argstr='-lamap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_lamap', 
+                       requires=['dti_flag'])
+
+    camap_file = File(desc='Filename of colour CA map',
+                       argstr='-camap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_camap', 
+                       requires=['dti_flag'])
+
+    rdmap_file = File(desc='Filename of colour RD map',
+                       argstr='-rdmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_rdmap', 
+                       requires=['dti_flag'])
+
+    admap_file = File(desc='Filename of colour AD map',
+                       argstr='-admap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_admap', 
+                       requires=['dti_flag'])
+
+    aamap_file = File(desc='Filename of colour AA map',
+                       argstr='-aamap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_aamap', 
+                       requires=['dti_flag'])
+
+    samap_file = File(desc='Filename of colour SA map',
+                       argstr='-samap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_samap', 
+                       requires=['dti_flag'])
     #tenmap_file = File(desc='Filename of tensor map', 
     #                   argstr='-tenmap %s',
     #                   name_source=['source_file'], 
@@ -125,6 +179,16 @@ class FitDwiOutputSpec(TraitedSpec):
     v1map_file = File(desc='Filename of PDD map [x,y,z]')
     rgbmap_file = File(desc='Filename of colour FA map')
     tenmap_file = File(desc='Filename of tensor map')
+
+    ramap_file = File(desc='Filename of RA map')
+    klmap_file = File(desc='Filename of KL map')
+    atmap_file = File(desc='Filename of AT map')
+    lamap_file = File(desc='Filename of LA map')
+    camap_file = File(desc='Filename of CA map')
+    rdmap_file = File(desc='Filename of RD map')
+    admap_file = File(desc='Filename of AD map')
+    aamap_file = File(desc='Filename of AA map')
+    samap_file = File(desc='Filename of SA map')
 
 # FitDwi function
 # TODO: Add functionality to selectivitly generate outputs images, as currently all possible
@@ -195,7 +259,59 @@ class DwiToolInputSpec(NIFTYFITCommandInputSpec):
                        name_template='%s_logdti2', 
                        requires=['dti_flag'])
     
-    
+    ramap_file = File(desc='Filename of colour RA map',
+                       argstr='-ramap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_ramap', 
+                       requires=['dti_flag'])
+
+    klmap_file = File(desc='Filename of colour KL map',
+                       argstr='-klmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_klmap', 
+                       requires=['dti_flag'])
+
+    atmap_file = File(desc='Filename of colour AT map',
+                       argstr='-atmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_atmap', 
+                       requires=['dti_flag'])
+
+    lamap_file = File(desc='Filename of colour LA map',
+                       argstr='-lamap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_lamap', 
+                       requires=['dti_flag'])
+
+    camap_file = File(desc='Filename of colour CA map',
+                       argstr='-camap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_camap', 
+                       requires=['dti_flag'])
+
+    rdmap_file = File(desc='Filename of colour RD map',
+                       argstr='-rdmap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_rdmap', 
+                       requires=['dti_flag'])
+
+    admap_file = File(desc='Filename of colour AD map',
+                       argstr='-admap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_admap', 
+                       requires=['dti_flag'])
+
+    aamap_file = File(desc='Filename of colour AA map',
+                       argstr='-aamap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_aamap', 
+                       requires=['dti_flag'])
+
+    samap_file = File(desc='Filename of colour SA map',
+                       argstr='-samap %s',
+                       name_source=['op_basename'],
+                       name_template='%s_samap', 
+                       requires=['dti_flag'])
     # Methods options
     mono_flag = traits.Bool(desc='Input is a single exponential to non-directional data [default with no b-vectors]',
                             argstr='-mono',
@@ -237,6 +353,15 @@ class DwiToolOutputSpec(TraitedSpec):
     v1map_file = File(desc='Filename of PDD map [x,y,z]')
     rgbmap_file = File(desc='Filename of colour FA map')
     logdti_file = File(desc='Filename of output logdti map')
+    ramap_file = File(desc='Filename of RA map')
+    klmap_file = File(desc='Filename of KL map')
+    atmap_file = File(desc='Filename of AT map')
+    lamap_file = File(desc='Filename of LA map')
+    camap_file = File(desc='Filename of CA map')
+    rdmap_file = File(desc='Filename of RD map')
+    admap_file = File(desc='Filename of AD map')
+    aamap_file = File(desc='Filename of AA map')
+    samap_file = File(desc='Filename of SA map')
 
 # DwiTool command
 class DwiTool(NIFTYFITCommand):

@@ -682,6 +682,8 @@ class RegF3DInputSpec(NIFTYREGCommandInputSpec):
     ssd_flag = traits.Bool(desc='Use SSD as the similarity measure', argstr='--ssd')
     ssd2_flag = PositiveInt(desc='Use SSD as the similarity measure for a given time point', 
                             argstr='-ssd %d')
+    ssd3_val =  traits.Tuple(PositiveInt, PositiveInt, desc='Use SSD as the similarity measure for a given time point', 
+                            argstr='-ssd %d -ssd %d')
     kld_flag = traits.Bool(desc='Use KL divergence as the similarity measure', argstr='--kld')
     kld2_flag = PositiveInt(desc='Use KL divergence as the similarity measure for a given time point', 
                             argstr='-kld %d')

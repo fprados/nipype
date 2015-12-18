@@ -1451,3 +1451,48 @@ class Complex(FSLCommand):
             outputs['magnitude_out_file'] = self._get_output('magnitude_out_file')
             outputs['phase_out_file'] = self._get_output('phase_out_file')
         return outputs
+
+class FslOrientInputSpec(FSLCommandInputSpec):
+    main_option = traits.Str(desc='main option', argstr='-%s', position=0, mandatory=True)
+    code = traits.Int(argstr='%d', desc='code for setsformcode', position=1, mandatory=False)
+    in_file = File(exists=True, desc='input file', argstr='%s', position=2, mandatory=True)
+
+class FslOrientOutputSpec(TraitedSpec):
+    out_file = File(desc = "out file", exists = True)
+
+class FslOrient(FSLCommand):
+
+    _cmd = 'fslorient'
+    input_spec = FslOrientInputSpec
+    output_spec = FslOrientOutputSpec
+
+    def _list_outputs(self):
+            outputs = self.output_spec().get()
+            outputs['out_file'] = os.path.abspath(self.inputs.in_file)
+            return outputs
+
+
+class CopyGeomInputSpec(FSLCommandInputSpec):
+    in_file = File(exists=True, mandatory=True, argstr="%s", position=0,
+                   desc="source image")
+    dest_file = File(exists=True, mandatory=True, argstr="%s", position=1,
+                     desc="destination image", copyfile=True, output_name='out_file',
+                     name_source='dest_file', name_template='%s')
+    ignore_dims = traits.Bool(desc=('Do not copy image dimensions'),
+                              argstr='-d', position="-1")
+
+class CopyGeomOutputSpec(TraitedSpec):
+    out_file = File(exists=True, desc="image with new geometry header")
+
+class CopyGeom(FSLCommand):
+    """Use fslcpgeom to copy the header geometry information to another image.
+    Copy certain parts of the header information (image dimensions, voxel dimensions,
+    voxel dimensions units string, image orientation/origin or qform/sform info)
+    from one image to another. Note that only copies from Analyze to Analyze
+    or Nifti to Nifti will work properly. Copying from different files will result
+    in loss of information or potentially incorrect settings.
+    """
+    _cmd = "fslcpgeom"
+    input_spec = CopyGeomInputSpec
+    output_spec = CopyGeomOutputSpec
+

@@ -22,6 +22,12 @@ class StatsCommand(NIFTYSEGCommand):
     _cmd = getNiftySegPath('seg_stats')
     input_spec = StatsInput
     
+
+class StatsOutput(TraitedSpec):
+
+    out_stats = File(exists=True, desc='stats result')
+
+
 class UnaryStatsInput(StatsInput):
 
     operation = traits.Enum('r', 'R', 'a', 's', 'v', 'vl', 'V', 
